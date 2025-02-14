@@ -22,7 +22,7 @@ export default {
   // Получить все туры
   async getAllTours(req, res) {
     try {
-      const tours = await Tour.findAll(where({ deleted: false }));
+      const tours = await Tour.findAll({ where: { deleted: false } });
       res.status(200).json(tours);
     } catch (error) {
       console.error(error);

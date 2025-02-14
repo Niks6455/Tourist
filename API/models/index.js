@@ -42,8 +42,8 @@ export const db = {
 	sequelize,
 	Sequelize,
 	User,
-	Booking,
 	Tour,
+	Booking,
 	Review,
 };
 

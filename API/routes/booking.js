@@ -7,5 +7,5 @@ const router = Router();
 router.route('/').post(asyncRoute(verify.general), bookingCtrl.createBooking);
 router.route('/').delete(asyncRoute(verify.general), bookingCtrl.deleteBooking);
 router.route('/').get(asyncRoute(verify.general), bookingCtrl.getBookings);
-router.route('/').put(asyncRoute(verify.general), bookingCtrl.updateBookingStatus);
+router.route('/').patch(asyncRoute(verify.general), bookingCtrl.updateBookingStatus);
 export default router;
