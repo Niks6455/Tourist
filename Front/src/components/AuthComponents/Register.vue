@@ -65,7 +65,6 @@ const register = () => {
             class="auth-input" 
             v-model="formData.fio" 
             :class="{ 'input-error': errorData.fio }"
-           
         />
         <span class="error-text" v-if="errorData.fio">{{ errorData.fio }}</span>
         
