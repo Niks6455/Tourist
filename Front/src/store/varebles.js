@@ -5,12 +5,20 @@ export const useVareblesStore = defineStore('vareble', {
     roleList: {
       1: 'Пользователь',
       2: 'Менеджер',
-    }
+    },
+    popUpState: "",
+    selectedTour: null
   }),
 
   actions: {
     getRoleName(roleId) {
       return this.roleList[roleId];
+    },
+    setPopUpState(state) {
+      this.popUpState = state
+    },
+    setSelectedTour(tourId) {
+      this.selectedTour = tourId
     }
   },
 

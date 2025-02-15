@@ -28,6 +28,10 @@ export default class Booking extends Model {
           type: DataTypes.TEXT,
           allowNull: true,
         },
+        countPeople: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,

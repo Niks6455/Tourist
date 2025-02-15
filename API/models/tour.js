@@ -29,6 +29,18 @@ export default class Tour extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
+        dateStart: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
+        dateEnd: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
+        nights: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         image: {
           type: DataTypes.TEXT,
           allowNull: true,

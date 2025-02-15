@@ -5,13 +5,37 @@ export default {
   // Создать тур
   async createTour(req, res) {
     try {
-      const { title, description, fullDescription, price, location } = req.body;
+      const { title, description, fullDescription, price, location, dateStart, dateEnd, nights } = req.body;
       
-      if (!title || !price || !location || !description || !fullDescription) {
-        return res.status(400).json({ message: 'Title, price, and location are required' });
+      if (!title ) {
+        return res.status(400).json({ message: 'Title is required' });
       }
       
-      const tour = await Tour.create({ title, description, fullDescription, price, location });
+      if (!description) {
+        return res.status(400).json({ message: 'Description is required' });
+      }
+      
+      if (!price) {
+        return res.status(400).json({ message: 'Price is required' });
+      }
+      
+      if (!location) {
+        return res.status(400).json({ message: 'Location is required' });
+      }
+
+      if (!dateStart) {
+        return res.status(400).json({ message: 'Date start is required' });
+      }
+      
+      if (!dateEnd) {
+        return res.status(400).json({ message: 'Date end is required' });
+      }
+       
+      if (!nights) {
+        return res.status(400).json({ message: 'Nights is required' });
+      }
+      
+      const tour = await Tour.create({ title, description, fullDescription, price, location, dateStart, dateEnd, nights });
       res.status(201).json({ message: 'Tour created successfully', tour });
     } catch (error) {
       console.error(error);

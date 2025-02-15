@@ -6,14 +6,14 @@ import Tour from '../models/tour.js';
 export default {
   async createBooking(req, res) {
     try {
-      const { tourId, comment } = req.body;
+      const { tourId, comment, countPeople } = req.body;
       const userId = req.user.id;
 
-      if (!userId || !tourId) {
+      if (!userId || !tourId || !comment || !countPeople) {
         return res.status(400).json({ message: 'User ID and Tour ID are required' });
       }
       
-      const booking = await Booking.create({ userId, tourId, status: 'pending', comment });
+      const booking = await Booking.create({ userId, tourId,  status: 'pending', comment, countPeople });
       res.status(201).json({ message: 'Booking created successfully', booking });
     } catch (error) {
       console.error(error);
