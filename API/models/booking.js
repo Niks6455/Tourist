@@ -32,6 +32,11 @@ export default class Booking extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        transferRequired: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,
@@ -42,7 +47,7 @@ export default class Booking extends Model {
           allowNull: false,
           defaultValue: DataTypes.NOW,
         },
-      },
+      }, 
       {
         sequelize,
         schema: 'public',

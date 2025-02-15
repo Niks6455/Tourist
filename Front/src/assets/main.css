@@ -1,7 +1,20 @@
+@font-face {
+  font-family: 'Overpass';
+  src: url('../assets/fonts/Overpass/overpass-regular.woff2') format('woff2'),
+       url('../assets/fonts/Overpass/overpass-regular.woff') format('woff'),
+       url('../assets/fonts/Overpass/overpass-regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400; /* Нормальный вес */
+  font-display: swap; /* Улучшает производительность загрузки */
+}
+
+
 body{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
- 
+  font-family: 'Overpass', sans-serif; 
+}
+*{
+  font-family: 'Overpass', sans-serif; 
 }

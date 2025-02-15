@@ -70,7 +70,7 @@ export default {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   },
-
+ 
   // Обновить тур
   async updateTour(req, res) {
     try {
