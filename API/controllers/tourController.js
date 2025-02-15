@@ -5,13 +5,13 @@ export default {
   // Создать тур
   async createTour(req, res) {
     try {
-      const { title, description, price, location } = req.body;
+      const { title, description, fullDescription, price, location } = req.body;
       
-      if (!title || !price || !location) {
+      if (!title || !price || !location || !description || !fullDescription) {
         return res.status(400).json({ message: 'Title, price, and location are required' });
       }
       
-      const tour = await Tour.create({ title, description, price, location });
+      const tour = await Tour.create({ title, description, fullDescription, price, location });
       res.status(201).json({ message: 'Tour created successfully', tour });
     } catch (error) {
       console.error(error);

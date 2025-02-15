@@ -1,12 +1,45 @@
 <script setup>
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { useAuthStore } from '@/store/auth';
+import { useVareblesStore } from '@/store/varebles';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
 
+const authStore = useAuthStore();
+const vareblesStore = useVareblesStore();
 const menuOpen = ref(false);
+const router = useRouter();
+
+const formatedFio = (fio) => {
+  if (!fio) return '';
+  const fioArr = fio.split(' ');
+  return fioArr.length > 1 ? `${fioArr[0]} ${fioArr[1]}` : fio;
+};
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 };
+
+// Закрываем попап при клике вне него
+const handleClickOutside = (event) => {
+  if (!event.target.closest('.profilePictureContainer') && !event.target.closest('.profilePictureIcon')) {
+    menuOpen.value = false;
+  }
+};
+
+// Выход из аккаунта
+const handleLogout = () => {
+  authStore.logout();
+  menuOpen.value = false;
+  router.push('/'); // Редирект на главную или страницу входа
+};
+
+// Добавляем и удаляем обработчик клика вне попапа
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
@@ -15,16 +48,23 @@ const toggleMenu = () => {
         <RouterLink to="/" class="logo">Travel<span>Tour</span></RouterLink>
   
         <nav class="nav">
-          <RouterLink to="/" class="nav-link">Главная</RouterLink>
+          <RouterLink to="/homePage" class="nav-link">Главная</RouterLink>
           <RouterLink to="/catalog" class="nav-link">Туры</RouterLink>
           <RouterLink to="/zacaz" class="nav-link">Мои заказы</RouterLink>
         </nav>
         <div class="profilePicture">
-            <img src="/img/people.png"/>
-            <div class="profilePictureContainer">
-              <!-- <p>{{ sessionStorage.getItem('user') }}</p> -->
-              <botton>Выход</botton>
-            </div>
+          <!-- Иконка профиля -->
+          <div class="profilePictureIcon" @click="toggleMenu">
+            <img src="/img/people.png" />
+          </div>
+  
+          <!-- Выпадающее меню -->
+          <div v-if="menuOpen" class="profilePictureContainer">
+            <p class="profilePictureContainer__title">Данные аккаунта:</p>
+            <p>ФИО: {{ authStore?.user?.fio }}</p>
+            <p>Роль: {{ vareblesStore.getRoleName(authStore?.user?.role) }}</p>
+            <button @click="handleLogout">Выход</button>
+          </div>
         </div>
        
       </div>
@@ -35,10 +75,11 @@ const toggleMenu = () => {
 
   
   <style scoped lang="scss">
+
   $primary-color: #927AF4;
   $secondary-color: #78CFEB;
+  $darcIndigo: #4C3F91;
   $transition-speed: 0.3s;
-  
   .header {
     background: white;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
@@ -51,22 +92,46 @@ const toggleMenu = () => {
     box-sizing: border-box;
 
     .profilePicture{
-        cursor: pointer;
-        transition: 0.1s linear all;
-        &:hover{
-            opacity: 0.8;
-        }
-        img{
-            width: 50px;
-            height: 50px;
+        .profilePictureIcon{
+          cursor: pointer;
+          transition: 0.1s linear all;
+          &:hover{
+              opacity: 0.8;
+          }
+          img{
+              width: 50px;
+              height: 50px;
+          }
         }
         .profilePictureContainer{
           position: absolute;
           top: 100%;
           background-color: #fff;
-          border-radius: 8px;
+          border-radius: 0px 0px 8px 8px;
           padding: 20px 25px;
           right: 25px;
+          box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+          .profilePictureContainer__title{
+            margin-bottom: 10px;
+          }
+          p{
+            margin: 5px 0px;
+          }
+          button{
+            background-color: $primary-color;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: 0.1s linear all;
+            width: 100%;
+            &:hover{
+                transform: scale(1.02);
+            }
+          }
         }
     }
     .container {

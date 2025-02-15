@@ -1,8 +1,17 @@
 
 <script setup>
-    import { ref } from 'vue';
+    import { ref, onMounted } from 'vue';
     import Header from '@/components/Header.vue';
+    import { getAllTours } from '@/api/apiRequest';
+    import CardTour from '@/components/TourComponents/CardTour.vue';
     const TourData = ref([]);
+
+
+    onMounted(async () => {
+        getAllTours().then((response) => {
+            TourData.value = response.data;
+        })
+    })
 </script>
 
 
@@ -14,6 +23,9 @@
         </section>
         <div v-if="TourData.length === 0" class="notData">
             <p>Туры отсутствуют!</p>
+        </div>
+        <div v-else class="tours" v-for="tour in TourData" :key="tour.id">
+            <CardTour :tour="tour"/>
         </div>
     </main>
 </template>
@@ -35,5 +47,14 @@ main{
         display: flex;
         justify-content: center;
     }
+    .tours{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        flex-direction: row;
+        width: 100vw;
+    }
 }
+
 </style>

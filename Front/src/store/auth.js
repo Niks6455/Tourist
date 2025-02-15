@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    token: null
+    token: localStorage.getItem("token") || "", // Загружаем токен из localStorage при запуске
   }),
 
   actions: {
@@ -19,6 +19,8 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isAuthenticated: (state) => !!state.token
-  }
+  },
+  persist: true // теперь данные сохраняются в localStorage
+
   
 })

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { defineEmits } from 'vue';
 import {loginFunction} from '@/api/apiRequest'
 import { useRouter } from "vue-router";
+import { useAuthStore } from '@/store/auth'
 
 const emit = defineEmits(['toggle']);
 const router = useRouter();
@@ -10,6 +11,8 @@ const formData = ref({
     email: '',
     password: ''
 });
+
+const authStore = useAuthStore()
 
 const errorData = ref({
     email: '',
@@ -48,6 +51,8 @@ const login = () => {
         loginFunction(data).then((res) => {
             if(res?.status === 200){
                 ErrorText.value = "";
+                console.log('data', res.data);
+                authStore.login( res.data.user ,res.data.token);
                 router.push('/homePage');
             }else{
                 ErrorText.value = "Не правильный логин или пароль";
