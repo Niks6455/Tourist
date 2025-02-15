@@ -1,3 +1,14 @@
+<script setup>
+import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
+
+const menuOpen = ref(false);
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value;
+};
+</script>
+
 <template>
     <header class="header">
       <div class="container">
@@ -10,23 +21,18 @@
         </nav>
         <div class="profilePicture">
             <img src="/img/people.png"/>
+            <div class="profilePictureContainer">
+              <!-- <p>{{ sessionStorage.getItem('user') }}</p> -->
+              <botton>Выход</botton>
+            </div>
         </div>
-  
+       
       </div>
   
     </header>
   </template>
   
-  <script setup>
-  import { ref } from 'vue';
-  import { RouterLink } from 'vue-router';
-  
-  const menuOpen = ref(false);
-  
-  const toggleMenu = () => {
-    menuOpen.value = !menuOpen.value;
-  };
-  </script>
+
   
   <style scoped lang="scss">
   $primary-color: #927AF4;
@@ -53,6 +59,14 @@
         img{
             width: 50px;
             height: 50px;
+        }
+        .profilePictureContainer{
+          position: absolute;
+          top: 100%;
+          background-color: #fff;
+          border-radius: 8px;
+          padding: 20px 25px;
+          right: 25px;
         }
     }
     .container {

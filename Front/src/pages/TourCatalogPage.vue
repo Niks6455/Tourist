@@ -1,13 +1,14 @@
 
 <script setup>
     import { ref } from 'vue';
-
+    import Header from '@/components/Header.vue';
     const TourData = ref([]);
 </script>
 
 
 <template>
     <main>
+        <Header/>
         <section>
             <h1>Каталог туров</h1>
         </section>

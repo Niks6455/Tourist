@@ -1,9 +1,10 @@
 <script setup>
-
+import Header from '@/components/Header.vue';
 </script>
 
 <template>
     <main>
+        <Header/>
         <h1>Заказы</h1>
     </main>
 </template>

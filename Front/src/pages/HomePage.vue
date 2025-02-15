@@ -1,36 +1,34 @@
-<template>
-    <div class="home">
-      <section class="hero">
-        <div class="hero-content">
-          <h1>Путешествуй с нами!</h1>
-          <p>Лучшие туры по доступным ценам</p>
-          <RouterLink to="/catalog" class="btn">Посмотреть туры</RouterLink>
-        </div>
-      </section>
-  
-      <About/>
-      <HotTour/>
-      <Reviews/>
 
+<script setup>
+import { ref } from 'vue';
+import Header from '@/components/Header.vue';
+import { RouterLink } from 'vue-router';
+import About from './../components/HomePageComponents/About.vue';
+import HotTour from '../components/HomePageComponents/HotTour.vue';
+import Reviews from '../components/HomePageComponents/Reviews.vue';
+
+</script>
+
+<template>
+  <div>
+    <Header />
+      <div class="home">
+        <section class="hero">
+          <div class="hero-content">
+            <h1>Путешествуй с нами!</h1>
+            <p>Лучшие туры по доступным ценам</p>
+            <RouterLink to="/catalog" class="btn">Посмотреть туры</RouterLink>
+          </div>
+        </section>
+    
+        <About/>
+        <HotTour/>
+        <Reviews/>
+
+      </div>
     </div>
   </template>
   
-  <script setup>
-  import { ref } from 'vue';
-  import { RouterLink } from 'vue-router';
-  import About from './../components/HomePageComponents/About.vue';
-  import HotTour from '../components/HomePageComponents/HotTour.vue';
-    import Reviews from '../components/HomePageComponents/Reviews.vue';
-  const hotTours = ref([
-    { id: 1, title: 'Мальдивы', description: 'Рай на земле', price: '120 000', image: 'https://via.placeholder.com/150' },
-    { id: 2, title: 'Париж', description: 'Город любви', price: '95 000', image: 'https://via.placeholder.com/150' },
-  ]);
-  const reviews = ref([
-    { id: 1, author: 'Анна', text: 'Отличный сервис! Все понравилось!' },
-    { id: 2, author: 'Иван', text: 'Отдых прошел на ура, спасибо команде!' },
-  ]);
-
-  </script>
   
   <style scoped lang="scss">
   $primary-color: #927AF4;

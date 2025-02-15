@@ -8,29 +8,41 @@ const stateReg = ref(false);
 </script>
 
 <template>
-    <Layout>
-        <div class="auth-container">
-            <h2>{{ stateReg ? 'Регистрация' : 'Авторизация' }}</h2>
-            <Login v-if="!stateReg" @toggle="stateReg = true" />
-            <Register v-else @toggle="stateReg = false" />
-        </div>
-    </Layout>
+    <div>
+     <p to="/" class="logo">Travel<span>Tour</span></p>
+        <Layout>
+            <div class="auth-container">
+                <h2>{{ stateReg ? 'Регистрация' : 'Авторизация' }}</h2>
+                <Login v-if="!stateReg" @toggle="stateReg = true" />
+                <Register v-else @toggle="stateReg = false" />
+            </div>
+        </Layout>
+    </div>
+    
 </template>
 
 <style lang="scss" scoped>
 $primary-color: #927AF4;
 $secondary-color: #78CFEB;
-.sam{
-    width: 400px;
-    margin: 0px;
-}
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: $primary-color;
+    text-decoration: none;
+    margin-left: 25px;
+    position: absolute;
+    left: 25px;
+    top: 0px;
+    span {
+      color: $secondary-color;
+    }
+  }
 .auth-container {
-    max-width: 400px;
+  
     margin: 50px auto;
     margin-top: 150px;
     min-height: calc(100vh - 501px);
     padding: 20px;
-    background: $primary-color;
     color: white;
     text-align: center;
     border-radius: 0; // Острые углы

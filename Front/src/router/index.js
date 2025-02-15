@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/pages/HomePage.vue'
+import HomePage from '../pages/HomePage.vue'
 import TourCatalogPage from '@/pages/TourCatalogPage.vue'
 import Zacaz from '../pages/Zacaz.vue'
-import AuthPage from '@/pages/AuthPage.vue'
+import AuthPage from '../pages/AuthPage.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/homePage',
       name: 'home',
       component: HomePage,
     },
@@ -20,7 +20,7 @@ const router = createRouter({
       name: 'zacaz',
       component: Zacaz
     },{
-      path: '/auth',
+      path: '/',
       name: 'auth',
       component: AuthPage
     }
