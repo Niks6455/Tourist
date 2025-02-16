@@ -96,3 +96,86 @@ export const updateUserRole = async (data) => {
         return error;
     }
 };
+
+export const updateBookingStatus = async (data) => {
+    try {
+        const response = await api.put("/bookings", data);
+        return response;
+    } catch (error) {
+        return error;
+    }
+};
+
+export const CreateTourFunction = async (data) => {
+    try {
+        const response = await api.post("/tours", data);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const UpdateTourFunction = async (data, id) => {
+    try {
+        const response = await api.patch(`/tours/${id}`, data);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const DeleteTourFunction = async (id) => {
+    try {
+        const response = await api.delete(`/tours/${id}`);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const UploadTourPhohoFunction = async (data) => {
+    try {
+        const response = await api.post("/upload", data,{
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const GetOneTourForId = async (id) => {
+    try {
+        const response = await api.get(`/tours/${id}`);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const SendReviewFunction = async (data) => {
+    try {
+        const response = await api.post("/reviews", data);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+export const getAllReview = async () => {
+    try {
+        const response = await api.get("/reviews");
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+export const getOneReview = async (id) => {
+    try {
+        const response = await api.get(`/reviews/${id}`);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}

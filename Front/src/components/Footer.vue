@@ -6,13 +6,6 @@
           <p class="footer__tagline">Твой надежный гид в мире путешествий! 🌍</p>
         </div>
   
-        <nav class="footer__nav">
-          <RouterLink to="/" class="footer__link">Главная</RouterLink>
-          <RouterLink to="/catalog" class="footer__link">Туры</RouterLink>
-          <RouterLink to="/about" class="footer__link">О нас</RouterLink>
-          <RouterLink to="/contacts" class="footer__link">Контакты</RouterLink>
-        </nav>
-  
         <div class="footer__copyright">
           <p>&copy; {{ new Date().getFullYear() }} TravelTour. Все права защищены.</p>
         </div>
@@ -32,7 +25,7 @@
     background: linear-gradient(135deg, rgba($primary-color, 0.9), rgba($secondary-color, 0.9));
     backdrop-filter: blur(10px);
     color: white;
-    padding: 3rem 1rem;
+    padding: 1rem 1rem;
     text-align: center;
     margin-top: 2rem;
     border-top: 5px solid rgba(255, 255, 255, 0.2);
@@ -74,12 +67,13 @@
     .footer__tagline {
       font-size: 1rem;
       opacity: 0.9;
+      margin: 0;
     }
   
   
     .footer__nav {
       display: flex;
-      gap: 2rem;
+      gap: 1rem;
       margin-top: 0rem;
   
       .footer__link {
@@ -98,7 +92,7 @@
     .footer__copyright {
       font-size: 0.9rem;
       opacity: 0.8;
-      margin-top: 0rem;
+      margin-top: 0px;
     }
   }
   </style>

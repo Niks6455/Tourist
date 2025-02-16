@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue';
 import { getUsers, updateUserRole } from '@/api/apiRequest';
-
+import Header from '@/components/Header.vue';
+import { useAuthStore } from '@/store/auth';
+const authStore = useAuthStore();
 const dataUsers = ref([]);
 const searchQuery = ref('');
 
@@ -9,10 +11,14 @@ const searchQuery = ref('');
 onMounted(async () => {
     getUsers().then((response) => {
         if (response.status === 200) {
-            dataUsers.value = response.data;
+            dataUsers.value = response.data.map(user => ({
+                ...user,
+                role: user.role === 1 ? 'user' : user.role === 2 ? 'manager' : 'admin'
+            }));
         }
     });
 });
+
 
 // Фильтр пользователей по поисковому запросу
 const filteredUsers = computed(() => {
@@ -27,17 +33,30 @@ const filteredUsers = computed(() => {
 
 // Обновление роли пользователя
 const changeRole = async (user, newRole) => {
-    user.role = newRole;
+    const roleMap = { user: 1, manager: 2, admin: 3 };
+    const data = {
+        id: user.id,
+        role: roleMap[newRole]
+    }
+    if(user.id === authStore.user.id){
+        alert("Нельзя менять свою роль!");
+        return
+    }
     try {
-        await updateUserRole(user.id, { role: newRole });
+        await updateUserRole(data);
+        user.role = newRole; // Обновляем локально
     } catch (error) {
         console.error('Ошибка обновления роли', error);
     }
 };
+
 </script>
 
 <template>
     <section>
+        <Header/>
+        <div class="innerCont">
+
         <h1>Пользователи системы</h1>
 
         <!-- Поле поиска -->
@@ -60,13 +79,12 @@ const changeRole = async (user, newRole) => {
                 <tbody>
                     <tr v-for="user in filteredUsers" :key="user.id">
                         <td>{{ user.id }}</td>
-                        <td>{{ user.name }}</td>
+                        <td>{{ user.fio }}</td>
                         <td>{{ user.email }}</td>
                         <td>
                             <select v-model="user.role" @change="changeRole(user, user.role)">
                                 <option value="user">Пользователь</option>
                                 <option value="manager">Менеджер</option>
-                                <option value="admin">Администратор</option>
                             </select>
                         </td>
                     </tr>
@@ -74,18 +92,22 @@ const changeRole = async (user, newRole) => {
             </table>
         </div>
         <p v-else>Ничего не найдено...</p>
+    </div>
+
     </section>
 </template>
 
 <style lang="scss" scoped>
 $primary-color: #927AF4;
 $secondary-color: #78CFEB;
-
-section {
+.innerCont{
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+}
+section {
+    min-height: calc(100vh - 330px);
+    padding-top: 100px;
 
     h1 {
         color: $primary-color;
@@ -111,7 +133,7 @@ section {
 
     .table-container {
         width: 90%;
-        max-width: 800px;
+        max-width: 1300px;
         overflow-x: auto;
         border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);

@@ -32,6 +32,10 @@ export default class Booking extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        phoneNumber: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
         transferRequired: {
           type: DataTypes.BOOLEAN,
           allowNull: false,

@@ -19,7 +19,7 @@ export default {
     if (!email) throw new Error("email no found");
     if (!password) throw new Error("password no found");
     if (!fio) throw new Error("FIO no found");
-
+ 
     const user = await User.findOne({ where: { email } });
     if (user) throw new Error("user is created");
 

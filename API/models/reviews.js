@@ -13,6 +13,10 @@ export default class Review extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
+        rating: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        }
       },
       {
         sequelize,

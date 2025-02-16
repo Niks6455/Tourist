@@ -1,33 +1,45 @@
-
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Header from '@/components/Header.vue';
 import { RouterLink } from 'vue-router';
 import About from './../components/HomePageComponents/About.vue';
 import HotTour from '../components/HomePageComponents/HotTour.vue';
 import Reviews from '../components/HomePageComponents/Reviews.vue';
+import { getAllReview } from '@/api/apiRequest';
 
+const reviews = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await getAllReview();
+    if (response.status === 200) {
+      reviews.value = response.data; // исправлено
+    }
+  } catch (error) {
+    console.error("Ошибка при загрузке отзывов:", error);
+  }
+});
 </script>
 
 <template>
   <div>
     <Header />
-      <div class="home">
-        <section class="hero">
-          <div class="hero-content">
-            <h1>Путешествуй с нами!</h1>
-            <p>Лучшие туры по доступным ценам</p>
-            <RouterLink to="/catalog" class="btn">Посмотреть туры</RouterLink>
-          </div>
-        </section>
-    
-        <About/>
-        <HotTour/>
-        <Reviews/>
+    <div class="home">
+      <section class="hero">
+        <div class="hero-content">
+          <h1>Путешествуй с нами!</h1>
+          <p>Лучшие туры по доступным ценам</p>
+          <RouterLink to="/catalog" class="btn">Посмотреть туры</RouterLink>
+        </div>
+      </section>
 
-      </div>
+      <About />
+      <HotTour />
+      <Reviews :reviews="reviews" />
     </div>
-  </template>
+  </div>
+</template>
+
   
   
   <style scoped lang="scss">

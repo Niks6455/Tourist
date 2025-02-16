@@ -5,7 +5,7 @@ export default {
   // Создать тур
   async createTour(req, res) {
     try {
-      const { title, description, fullDescription, price, location, dateStart, dateEnd, nights } = req.body;
+      const { title, description, fullDescription, price, location, dateStart, dateEnd, nights, transfer } = req.body;
       
       if (!title ) {
         return res.status(400).json({ message: 'Title is required' });
@@ -18,7 +18,7 @@ export default {
       if (!price) {
         return res.status(400).json({ message: 'Price is required' });
       }
-      
+       
       if (!location) {
         return res.status(400).json({ message: 'Location is required' });
       }
@@ -34,8 +34,11 @@ export default {
       if (!nights) {
         return res.status(400).json({ message: 'Nights is required' });
       }
+      if(!transfer){
+        return res.status(400).json({ message: 'Transfer is required' });
+      }
       
-      const tour = await Tour.create({ title, description, fullDescription, price, location, dateStart, dateEnd, nights });
+      const tour = await Tour.create({ title, description, fullDescription, price, location, dateStart, dateEnd, nights, transfer });
       res.status(201).json({ message: 'Tour created successfully', tour });
     } catch (error) {
       console.error(error);
@@ -75,14 +78,14 @@ export default {
   async updateTour(req, res) {
     try {
       const { id } = req.params;
-      const { title, description, price, location } = req.body;
+      const { title, description, price, location, fullDescription, dateStart, dateEnd, nights, transfer } = req.body;
       
       const tour = await Tour.findByPk(id);
       if (!tour) {
         return res.status(404).json({ message: 'Tour not found' });
       }
       
-      await tour.update({ title, description, price, location });
+      await tour.update({ title, description, price, location, fullDescription, dateStart, dateEnd, nights, transfer });
       res.status(200).json({ message: 'Tour updated successfully', tour });
     } catch (error) {
       console.error(error);

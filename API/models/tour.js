@@ -41,6 +41,11 @@ export default class Tour extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        transfer: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
         image: {
           type: DataTypes.TEXT,
           allowNull: true,

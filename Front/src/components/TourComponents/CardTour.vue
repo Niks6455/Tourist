@@ -1,73 +1,106 @@
 <script setup>
-import { onMounted } from 'vue';
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Reviews from '../HomePageComponents/Reviews.vue';
 import { useVareblesStore } from '@/store/varebles';
+import { useAuthStore } from '@/store/auth';
+import { DeleteTourFunction, getOneReview } from '@/api/apiRequest';
+
 defineProps({
   tour: Object, // Получаем объект тура из пропсов
+  refreshTours: Function
 });
-const vareblesStore = useVareblesStore();
-const isPopupOpen = ref(false);
 
-const openPopup = () => {
+const vareblesStore = useVareblesStore();
+const authStore = useAuthStore();
+const isPopupOpen = ref(false);
+const reviews = ref([]); // Храним отзывы
+
+const openPopup = async (id) => {
   isPopupOpen.value = true;
+  fetchReviews(id); // Загружаем отзывы
 };
 
 const closePopup = () => {
   isPopupOpen.value = false;
 };
 
-const bronedTour = (id) => {
-    vareblesStore.setSelectedTour(id)
-    vareblesStore.setPopUpState("bronedTour")
-    closePopup();
-}
+const fetchReviews = async (id) => {
+    const indTour = id && id 
+    getOneReview(indTour).then((res) => {
+        if(res.status === 200) {
+            reviews.value = res.data;
+        }
+    })
+};
 
+const bronedTour = (id) => {
+  vareblesStore.setSelectedTour(id);
+  vareblesStore.setPopUpState("bronedTour");
+  closePopup();
+};
+
+const deleteTour = async (id) => {
+  const res = await DeleteTourFunction(id);
+  if (res?.status === 200) {
+    refreshTours();
+    alert("Тур успешно удален!");
+  }
+};
+
+const clickEditTour = (id) => {
+  vareblesStore.setSelectedTour(id);
+  vareblesStore.setPopUpState('editTour');
+};
+
+watch(isPopupOpen, (newValue) => {
+  if (newValue) fetchReviews(); // Загружаем отзывы при открытии
+});
 </script>
 
 <template>
     <section>
-
-    <section class="tour-card">
-        <div class="tour-card__image">
-            <img :src="tour.image ? `data:image/png;base64,${tour.image}` : '/img/noPhoto.png'" alt="Tour Image" />
-
-        </div>
-        <div class="tour-card__info">
-            <h3>{{ tour.title }}</h3>
-            <p>{{ tour.description }}</p>
-            <p><strong>Стоимость:</strong> {{ tour.price }} ₽</p>
-            <button @click="openPopup" class="details-btn">Подробнее</button>
-            <button class="bronedSubmit" @click="bronedTour(tour.id)" >Забронировать</button>
-        </div>
-    </section>
-
-    <!-- PopUp окно -->
-    <div v-if="isPopupOpen" class="popup-overlay" @click.self="closePopup">
-        <div class="popup-content">
-            <button class="close-btn" @click="closePopup">✖</button>
-            <div class="popup-contentImg">
+        <section class="tour-card">
+            <div class="tour-card__image">
                 <img :src="tour.image ? `data:image/png;base64,${tour.image}` : '/img/noPhoto.png'" alt="Tour Image" />
             </div>
-            <div class="popup-contentText">
-                <h2>{{ tour.title }}</h2>
-                <p><strong>Страна:</strong> {{ tour.location }}</p>
-                <p><strong>Описание:</strong> {{ tour.fullDescription || tour.description }}</p>
-                <p><strong>Цена:</strong> {{ tour.price }} ₽</p>
-                <p><strong>Дата начала тура:</strong> {{ new Date(tour.dateStart).toLocaleDateString() }}</p>
-                <p><strong>Дата окончания тура:</strong> {{ new Date(tour.dateEnd).toLocaleDateString() }}</p>
-                <p><strong>Количество ночей:</strong> {{ tour.nights }}</p>
-                <button class="bronedSubmit" @click="bronedTour(tour.id)">Забронировать тур</button>
-                <div class="popup-contentReviews">
-                    <Reviews/>
+            <div class="tour-card__info">
+                <h3>{{ tour.title }}</h3>
+                <p>{{ tour.description }}</p>
+                <p><strong>Стоимость:</strong> {{ tour.price }} ₽</p>
+                <button @click="openPopup(tour.id)" class="details-btn">Подробнее</button>
+                <button v-if="authStore.checkManager" @click="clickEditTour(tour.id)" class="details-btn">Редактировать</button>
+                <button v-if="!authStore.checkManager" class="bronedSubmit" @click="bronedTour(tour.id)">Забронировать</button>
+                <button v-if="authStore.checkManager" class="deletButton" @click="deleteTour(tour.id)">&times;</button>
+            </div>
+        </section>
+
+        <!-- PopUp окно -->
+        <div v-if="isPopupOpen" class="popup-overlay" @click.self="closePopup">
+            <div class="popup-content">
+                <button class="close-btn" @click="closePopup">✖</button>
+                <div class="popup-contentImg">
+                    <img :src="tour.image ? `data:image/png;base64,${tour.image}` : '/img/noPhoto.png'" alt="Tour Image" />
+                </div>
+                <div class="popup-contentText">
+                    <h2>{{ tour.title }}</h2>
+                    <p><strong>Страна:</strong> {{ tour.location }}</p>
+                    <p><strong>Описание:</strong> {{ tour.fullDescription || tour.description }}</p>
+                    <p><strong>Цена:</strong> {{ tour.price }} ₽</p>
+                    <p><strong>Дата начала тура:</strong> {{ new Date(tour.dateStart).toLocaleDateString() }}</p>
+                    <p><strong>Дата окончания тура:</strong> {{ new Date(tour.dateEnd).toLocaleDateString() }}</p>
+                    <p><strong>Количество ночей:</strong> {{ tour.nights }}</p>
+                    <p><strong>Трансфер:</strong> {{ tour.transfer ? "Включен" : "Отсутствует" }}</p>
+                    <button class="bronedSubmit" @click="bronedTour(tour.id)" v-if="!authStore.checkManager">Забронировать тур</button>
+                    
+                    <div class="popup-contentReviews">
+                        <Reviews :reviews="reviews" />
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-
+    </section>
 </template>
+
 
 <style scoped lang="scss">
 $primary-color: #927AF4;
@@ -81,7 +114,7 @@ $darcIndigo: #4C3F91;
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
-
+    position: relative;
     &:hover {
         transform: scale(1.03);
     }
@@ -127,6 +160,30 @@ $darcIndigo: #4C3F91;
     }
 }
 
+.deletButton{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    background-color: #927AF441;
+    border: 1px solid $primary-color;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $primary-color;
+    transition: background 0.2s ease-in-out;
+    &:hover{
+        background-color: $primary-color;
+        color: white;
+    }
+
+}
 /* Стили для PopUp */
 .popup-overlay {
     position: fixed;
@@ -150,6 +207,7 @@ $darcIndigo: #4C3F91;
     position: relative;
     text-align: center;
     display: flex;
+    width: 90%;
     img{
         max-height: 500px;
         margin-right: 25px;

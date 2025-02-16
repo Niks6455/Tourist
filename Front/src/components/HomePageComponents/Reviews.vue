@@ -1,96 +1,66 @@
-<template>
-  <div class="review">
-    <h1>Отзывы клиентов: </h1>
-    <div class="review-slider">
-      <div
-        class="review-slider__wrapper"
-        :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
-      >
-        <div
-          v-for="(review, index) in reviews"
-          :key="index"
-          class="review-slider__item"
-        >
-          <p class="review-slider__text">"{{ review.text }}"</p>
-          <div class="review-slider__rating">
-            <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= review.rating }">★</span>
-          </div>
-          <div class="review-slider__author">
-            <img :src="review.avatar" :alt="review.name" class="review-slider__avatar" />
-            <div>
-              <span class="review-slider__name">{{ review.name }}</span>
-              <span class="review-slider__date">{{ review.date }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <button class="review-slider__btn review-slider__btn--prev" @click="prevSlide">
-        ❮
-      </button>
-      <button class="review-slider__btn review-slider__btn--next" @click="nextSlide">
-        ❯
-      </button>
-  
-      <div class="review-slider__dots">
-        <span
-          v-for="(review, index) in reviews"
-          :key="index"
-          class="review-slider__dot"
-          :class="{ active: index === currentIndex }"
-          @click="goToSlide(index)"
-        ></span>
-      </div>
-    </div>
-  </div>
-
-</template>
-
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, defineProps, computed } from 'vue';
 
-const reviews = ref([
-  {
-    name: 'Анна Иванова',
-    text: 'Отличный сервис! Все организовано на высшем уровне!',
-    avatar: '/img/people.png',
-    rating: 5,
-    date: '10 февраля 2025'
-  },
-  {
-    name: 'Максим Петров',
-    text: 'Тур был просто замечательный, обязательно поеду еще раз!',
-    avatar: '/img/people.png',
-    rating: 4,
-    date: '5 января 2025'
-  },
-  {
-    name: 'Екатерина Смирнова',
-    text: 'Все прошло идеально! Очень довольна организацией поездки.',
-    avatar: '/img/people.png',
-    rating: 5,
-    date: '22 декабря 2024'
-  }
-]);
+const props = defineProps({
+  reviews: Array
+});
 
 const currentIndex = ref(0);
 let interval = null;
 
+// Тестовые данные, если `reviews` нет
+const defaultReviews = [
+  {
+    id: 1,
+    review: "Отличный тур, очень понравилось!",
+    rating: 5,
+    createdAt: "2025-02-16T12:43:24.609Z",
+    User: { fio: "Иван Иванов" }
+  },
+  {
+    id: 2,
+    review: "Хороший сервис, но есть нюансы.",
+    rating: 4,
+    createdAt: "2025-02-10T15:30:00.000Z",
+    User: { fio: "Екатерина Смирнова" }
+  }
+];
+
+// Используем реальные данные, если они есть, иначе тестовые
+const computedReviews = computed(() => {
+  return props.reviews && props.reviews.length ? props.reviews : defaultReviews;
+});
+
 const nextSlide = () => {
-  currentIndex.value = (currentIndex.value + 1) % reviews.value.length;
+  if (computedReviews.value.length > 0) {
+    currentIndex.value = (currentIndex.value + 1) % computedReviews.value.length;
+  }
 };
 
 const prevSlide = () => {
-  currentIndex.value =
-    currentIndex.value === 0 ? reviews.value.length - 1 : currentIndex.value - 1;
+  if (computedReviews.value.length > 0) {
+    currentIndex.value =
+      currentIndex.value === 0 ? computedReviews.value.length - 1 : currentIndex.value - 1;
+  }
 };
 
 const goToSlide = (index) => {
-  currentIndex.value = index;
+  if (computedReviews.value.length > 0) {
+    currentIndex.value = index;
+  }
 };
 
 const startAutoSlide = () => {
   interval = setInterval(nextSlide, 5000);
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
 };
 
 onMounted(() => {
@@ -102,17 +72,64 @@ onUnmounted(() => {
 });
 </script>
 
+<template>
+  <div class="review">
+    <h1>Отзывы клиентов:</h1>
+    <div class="review-slider">
+      <div
+        class="review-slider__wrapper"
+        :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
+      >
+        <div
+          v-for="(review, index) in computedReviews"
+          :key="index"
+          class="review-slider__item"
+        >
+          <p class="review-slider__text">"{{ review.review }}"</p>
+          <div class="review-slider__rating">
+            <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= review.rating }">★</span>
+          </div>
+          <div class="review-slider__author">
+            <img 
+              src="/img/people.png"
+              class="review-slider__avatar" 
+            />
+            <div>
+              <span class="review-slider__name">{{ review.User?.fio || 'Аноним' }}</span>
+              <span class="review-slider__date">{{ formatDate(review.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <button class="review-slider__btn review-slider__btn--prev" @click="prevSlide">❮</button>
+      <button class="review-slider__btn review-slider__btn--next" @click="nextSlide">❯</button>
+  
+      <div class="review-slider__dots">
+        <span
+          v-for="(review, index) in computedReviews"
+          :key="index"
+          class="review-slider__dot"
+          :class="{ active: index === currentIndex }"
+          @click="goToSlide(index)"
+        ></span>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped lang="scss">
 $primary-color: #927AF4;
 $secondary-color: #78CFEB;
 $transition-speed: 0.5s;
 
-.review{
+.review {
   margin: 100px 0px 25px 0px;
-  h1{
+  h1 {
     color: $primary-color;
   }
 }
+
 .review-slider {
   margin: 0px auto 100px auto;
   position: relative;

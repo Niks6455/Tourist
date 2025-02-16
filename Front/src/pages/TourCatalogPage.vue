@@ -4,30 +4,38 @@ import Header from '@/components/Header.vue';
 import { getAllTours } from '@/api/apiRequest';
 import CardTour from '@/components/TourComponents/CardTour.vue';
 import { useVareblesStore } from '@/store/varebles';
+import { useAuthStore } from '@/store/auth';
 import { createBookings } from '@/api/apiRequest';
+import AddNewTourVue from '../components/TourComponents/AddNewTour.vue';
+import EditTour from '../components/TourComponents/EditTour.vue';
 const TourData = ref([]);
 const vareblesStore = useVareblesStore();
-
+const authStore = useAuthStore();
 const peopleCount = ref(1);
 const comments = ref('');
 const transferRequired = ref(false);
-
+const phoneNumber = ref('');
 onMounted(async () => {
+    getTours();
+});
+
+const getTours = () =>{
     getAllTours().then((response) => {
         TourData.value = response.data;
     });
-});
+}
 
 const closeBronded = () => {
     vareblesStore.setSelectedTour(null);
     vareblesStore.setPopUpState('');
     peopleCount.value = '';
     comments.value = '';
+    phoneNumber.value = '';
     transferRequired.value = false;
 };
 
 const bookTour = () => {
-    if(!peopleCount.value || !comments.value || !vareblesStore.selectedTour){
+    if(!peopleCount.value || !comments.value || !vareblesStore.selectedTour || !phoneNumber.value){
         alert("Заполните все поля!");
         return
     }
@@ -35,11 +43,11 @@ const bookTour = () => {
         tourId: vareblesStore.selectedTour,
         countPeople: peopleCount.value,
         comment: comments.value,
-        transferRequired: transferRequired.value
+        transferRequired: true,
+        phoneNumber: phoneNumber.value
     }
     createBookings(data).then((res) => {
         if(res?.status === 201){
-            console.log("res", res);
             alert("Тур успешно забронирован!");
             closeBronded();
         }else{
@@ -56,14 +64,21 @@ const bookTour = () => {
         <section>
             <h1>Каталог туров</h1>
         </section>
-        <div v-if="TourData.length === 0" class="notData">
+        <div v-if="TourData.length === 0 && !authStore.checkManager" class="notData">
             <p>Туры отсутствуют!</p>
         </div>
         <div v-else class="tourContainer">
+            <div v-if="authStore.checkManager" class="addTours" @click="vareblesStore.setPopUpState('addTour')">
+                <div>
+                    <p>+</p>
+                    <p>Добавить тур</p>
+                </div>
+            </div>
             <div class="tours" v-for="tour in TourData" :key="tour.id">
-                <CardTour :tour="tour" />
+                <CardTour :tour="tour" :refreshTours="getTours"/>
             </div>
         </div>
+      
 
         <div v-if="vareblesStore.popUpState === 'bronedTour'" class="popupBroned">
             <div class="popupBronedInner">
@@ -91,6 +106,15 @@ const bookTour = () => {
 
                 <div>
                     <div class="label">
+                        <label>Номер телефона:</label>
+                    </div>
+                    <div class="inputCont">
+                        <input v-model="phoneNumber" placeholder="Номер телефона" />
+                    </div>
+                </div>
+
+                <!-- <div>
+                    <div class="label">
                         <label>Трансфер до аэропорта:</label>
                     </div>
                     <div class="radio-group">
@@ -103,18 +127,23 @@ const bookTour = () => {
                             Нет
                         </label>
                     </div>
-                </div>
+                </div> -->
+                
+
                 <div class="info">
                     <p><strong>Итоговая Стоимость:</strong> {{ TourData[vareblesStore.selectedTour - 1]?.price * (peopleCount || 1) }}</p>
                     <p><strong>Дата отправления:</strong> {{ new Date(TourData[vareblesStore.selectedTour - 1]?.dateStart).toLocaleDateString() }} </p>
                     <p><strong>Дата прибытия:</strong> {{ new Date(TourData[vareblesStore.selectedTour - 1]?.dateEnd).toLocaleDateString() }} </p>
                 </div>
 
-                <div>
+                <div v-if="!authStore.checkManager">
                     <button class="auth-btn" @click="bookTour">Забронировать</button>
                 </div>
             </div>
         </div>
+
+        <AddNewTourVue v-if="vareblesStore.popUpState === 'addTour'" :refreshTours="getTours" />
+       <EditTour v-if="vareblesStore.popUpState === 'editTour'" :refreshTours="getTours"/>
     </main>
 </template>
 
@@ -124,7 +153,7 @@ $secondary-color: #78CFEB;
 
 main {
     padding-top: 100px;
-    min-height: calc(100vh - 451px);
+    min-height: calc(100vh - 330px);
 
     h1 {
         color: $primary-color;
@@ -289,6 +318,29 @@ main {
         &:hover {
             background-color: darken($primary-color, 10%);
         }
+    }
+    .addTours{
+        background-color: #927AF449;
+        border: 2px solid #927AF4;
+        border-radius: 8px;
+        width: 300px;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        cursor: pointer;
+        font-size: 28px;
+        transition: 0.1s linear all;
+        &:hover{
+            color: #927AF4;
+            background-color: #927AF471;
+        }
+        p{
+            text-align: center;
+            margin: 0;
+        }
+
     }
 }
 </style>

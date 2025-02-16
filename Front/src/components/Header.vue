@@ -3,12 +3,19 @@ import { useAuthStore } from '@/store/auth';
 import { useVareblesStore } from '@/store/varebles';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+// Функция для добавления класса active
+const isActive = (path) => route.path === path ? 'active' : '';
 
 const authStore = useAuthStore();
 const vareblesStore = useVareblesStore();
 const menuOpen = ref(false);
 const router = useRouter();
 
+// Функция для добавления класса active
 const formatedFio = (fio) => {
   if (!fio) return '';
   const fioArr = fio.split(' ');
@@ -48,16 +55,15 @@ onBeforeUnmount(() => {
         <RouterLink to="/" class="logo">Travel<span>Tour</span></RouterLink>
   
         <nav class="nav" v-if="!authStore.checkManager">
-          <RouterLink to="/homePage" class="nav-link">Главная</RouterLink>
-          <RouterLink to="/catalog" class="nav-link">Туры</RouterLink>
-          <RouterLink to="/zacaz" class="nav-link">Мои брони</RouterLink>
+          <RouterLink to="/homePage" class="nav-link" :class="isActive('/homePage')">Главная</RouterLink>
+          <RouterLink to="/catalog" class="nav-link" :class="isActive('/catalog')">Туры</RouterLink>
+          <RouterLink to="/zacaz" class="nav-link" :class="isActive('/zacaz')">Мои брони</RouterLink>
         </nav>
-
+      
         <nav class="nav" v-else>
-          <RouterLink to="/catalog" class="nav-link">Туры</RouterLink>
-          <RouterLink to="/zacaz" class="nav-link">Заявки на бронирование</RouterLink>
-          <RouterLink to="/users" class="nav-link">Пользователи</RouterLink>
-
+          <RouterLink to="/catalog" class="nav-link" :class="isActive('/catalog')">Туры</RouterLink>
+          <RouterLink to="/bookings" class="nav-link" :class="isActive('/bookings')">Заявки на бронирование</RouterLink>
+          <RouterLink to="/users" class="nav-link" :class="isActive('/users')">Пользователи</RouterLink>
         </nav>
 
 
@@ -172,13 +178,20 @@ onBeforeUnmount(() => {
         font-size: 1rem;
         font-weight: 500;
         transition: color $transition-speed;
-  
+       
         &:hover {
           color: $primary-color;
         }
       }
+      .nav-link.active {
+        color: #927AF4;
+        font-weight: bold;
+        border-bottom: 2px solid #927AF4;
+      }
+     
+     
     }
-  
+   
     .menu-btn {
       display: none;
       background: none;
@@ -260,6 +273,8 @@ onBeforeUnmount(() => {
       }
     }
   }
+
+
   
   // Адаптивность
   @media (max-width: 768px) {

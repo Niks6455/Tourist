@@ -6,15 +6,15 @@ import Tour from '../models/tour.js';
 export default {
   async createBooking(req, res) {
     try {
-      const { tourId, comment, countPeople, transferRequired } = req.body;
+      const { tourId, comment, countPeople, transferRequired, phoneNumber } = req.body;
       const userId = req.user.id;
-
-      if ( !tourId || !comment || !countPeople || transferRequired) {
+      console.log("req.body", req.body);
+      if ( !tourId || !comment || !countPeople || !transferRequired || !phoneNumber ) {
         return res.status(400).json({ message: 'User ID and Tour ID are required' });
       }
       if(!userId) return res.status(400).json({ message: 'User ID is undefined' });
       
-      const booking = await Booking.create({ userId, tourId,  status: 'pending', comment, countPeople, transferRequired });
+      const booking = await Booking.create({ userId, tourId,  status: 'pending', comment, countPeople, transferRequired, phoneNumber });
       res.status(201).json({ message: 'Booking created successfully', booking });
     } catch (error) {
       console.error(error);
@@ -48,8 +48,8 @@ export default {
     try {
       const userData = req.user;
       let bookings;
-      
-      if (userData.role === 'manager') {
+      console.log("userData", userData);
+      if (userData.role === 2) {
         bookings = await Booking.findAll({ include: [User, Tour] });
       } else {
         bookings = await Booking.findAll({ where: { userId: userData.id }, include: [Tour] });

@@ -1,9 +1,9 @@
 <script setup>
-import { getBookings } from '@/api/apiRequest';
+import { getBookings, updateBookingStatus } from '@/api/apiRequest';
 import Header from '@/components/Header.vue';
 import { onMounted, ref, computed } from 'vue';
 import { useVareblesStore } from '@/store/varebles';
-import AddRewiews from '@/components/TourComponents/AddRewiews.vue';
+
 const vareblesStore = useVareblesStore();
 const dataBrondeTours = ref([]);
 const searchQuery = ref('');
@@ -27,12 +27,26 @@ const filteredBookings = computed(() => {
         );
     });
 });
+
+// Функция смены статуса
+const changeStatus = async (booking, newStatus) => {
+    const data = {
+        bookingId: booking.id,
+        status: newStatus
+    }
+    try {
+        await updateBookingStatus(data);
+        booking.status = newStatus;
+    } catch (error) {
+        console.error('Ошибка обновления статуса', error);
+    }
+};
 </script>
 
 <template>
     <main>
         <Header />
-        <h1>Мои туры</h1>
+        <h1>Заявки на бронирование туров</h1>
 
         <!-- Поле поиска -->
         <input 
@@ -46,6 +60,8 @@ const filteredBookings = computed(() => {
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Пользователь</th>
+                        <th>Email</th>
                         <th>Тур</th>
                         <th>Комментарий</th>
                         <th>Кол-во людей</th>
@@ -53,26 +69,31 @@ const filteredBookings = computed(() => {
                         <th>Дата начала</th>
                         <th>Дата окончания</th>
                         <th>Статус</th>
-                        <th>Отзыв</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="booking in filteredBookings" :key="booking.id">
                         <td>{{ booking.id }}</td>
+                        <td>{{ booking.User.fio }}</td>
+                        <td>{{ booking.User.email }}</td>
                         <td>{{ booking.Tour.title }}</td>
                         <td>{{ booking.comment || '—' }}</td>
                         <td>{{ booking.countPeople }}</td>
                         <td>{{ booking.phoneNumber }}</td>
                         <td>{{ new Date(booking.Tour.dateStart).toLocaleDateString() }}</td>
                         <td>{{ new Date(booking.Tour.dateEnd).toLocaleDateString() }}</td>
-                        <td>{{ vareblesStore.getStatusName(booking.status) }}</td>
-                        <td @click="vareblesStore.popUpState = 'AddRewiews'; vareblesStore.setSelectedTour(booking.Tour.id)"><button class="AddRewiews">Оставить отзыв</button></td>
+                        <td>
+                            <select v-model="booking.status" @change="changeStatus(booking, booking.status)">
+                                <option value="pending">В обработке</option>
+                                <option value="confirmed">Подтверждено</option>
+                                <option value="canceled">Завершен</option>
+                            </select>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <p v-else>Ничего не найдено...</p>
-        <AddRewiews v-if="vareblesStore.popUpState === 'AddRewiews'" :refreshReviews="true"/>
     </main>
 </template>
 
@@ -107,19 +128,6 @@ main {
         &:focus {
             border-color: $secondary-color;
             box-shadow: 0 0 8px rgba($secondary-color, 0.5);
-        }
-    }
-    .AddRewiews{
-        background-color: $primary-color;
-        border: none;
-        border-radius: 8px;
-        color: white;
-        padding: 5px 15px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.3s;
-        &:hover{
-            background-color: darken($primary-color, 10%);
         }
     }
 
@@ -160,6 +168,20 @@ main {
     tr:hover {
         background-color: rgba($secondary-color, 0.2);
         cursor: pointer;
+    }
+
+    select {
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid $primary-color;
+        background: white;
+        font-size: 14px;
+        cursor: pointer;
+        outline: none;
+
+        &:focus {
+            border-color: $secondary-color;
+        }
     }
 }
 </style>

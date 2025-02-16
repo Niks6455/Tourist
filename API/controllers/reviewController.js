@@ -18,8 +18,8 @@ export default {
    async createReview(req, res) {
        const userId = req.user.id;
       try {
-         const review = await Review.create({ review: req.body.review, userId: userId });
-         res.json(review);
+         const review = await Review.create({ review: req.body.review, userId: userId, rating: req.body.rating, tourId: req.body.tourId });
+         res.json(review); 
       } catch (e) {
          res.status(500).json(e);
       }
@@ -27,7 +27,10 @@ export default {
 
    async getReview(req, res) {
       try {
-         const review = await Review.findByPk(req.params.id);
+         const review = await Review.findAll({
+            where: { tourId: req.params.id },
+            include: { model: User, attributes: ['id', 'fio', 'email'] },
+         });
          res.json(review);
       } catch (e) {
          res.status(500).json(e);
