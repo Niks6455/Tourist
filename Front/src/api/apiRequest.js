@@ -78,3 +78,21 @@ export const getBookings = async () => {
         return error;
     }
 };
+
+export const getUsers = async () => {
+    try {
+        const response = await api.get("auth/getUsers");
+        return response;
+    } catch (error) {
+        return error;
+    }
+};
+
+export const updateUserRole = async (data) => {
+    try {
+        const response = await api.post("auth/svitchRole", data);
+        return response;
+    } catch (error) {
+        return error;
+    }
+};

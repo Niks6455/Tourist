@@ -7,6 +7,11 @@ export const useVareblesStore = defineStore('vareble', {
       2: 'Менеджер',
     },
     popUpState: "",
+    statusList: {
+      pending: 'В обработке',
+      confirmed: 'В процессе',
+      canceled: 'Завершен'
+    },
     selectedTour: null
   }),
 
@@ -14,9 +19,13 @@ export const useVareblesStore = defineStore('vareble', {
     getRoleName(roleId) {
       return this.roleList[roleId];
     },
+    getStatusName(status) {
+      return this.statusList[status];
+    },
     setPopUpState(state) {
       this.popUpState = state
     },
+    
     setSelectedTour(tourId) {
       this.selectedTour = tourId
     }

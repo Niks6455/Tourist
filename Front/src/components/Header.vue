@@ -47,11 +47,20 @@ onBeforeUnmount(() => {
       <div class="container">
         <RouterLink to="/" class="logo">Travel<span>Tour</span></RouterLink>
   
-        <nav class="nav">
+        <nav class="nav" v-if="!authStore.checkManager">
           <RouterLink to="/homePage" class="nav-link">Главная</RouterLink>
           <RouterLink to="/catalog" class="nav-link">Туры</RouterLink>
-          <RouterLink to="/zacaz" class="nav-link">Мои заказы</RouterLink>
+          <RouterLink to="/zacaz" class="nav-link">Мои брони</RouterLink>
         </nav>
+
+        <nav class="nav" v-else>
+          <RouterLink to="/catalog" class="nav-link">Туры</RouterLink>
+          <RouterLink to="/zacaz" class="nav-link">Заявки на бронирование</RouterLink>
+          <RouterLink to="/users" class="nav-link">Пользователи</RouterLink>
+
+        </nav>
+
+
         <div class="profilePicture">
           <!-- Иконка профиля -->
           <div class="profilePictureIcon" @click="toggleMenu">

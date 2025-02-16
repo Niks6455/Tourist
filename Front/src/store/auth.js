@@ -18,7 +18,8 @@ export const useAuthStore = defineStore('auth', {
   },
 
   getters: {
-    isAuthenticated: (state) => !!state.token
+    isAuthenticated: (state) => !!state.token,
+    checkManager: (state) => state.user.role === 2
   },
   persist: true // теперь данные сохраняются в localStorage
 
