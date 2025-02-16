@@ -55,6 +55,24 @@ const clickEditTour = (id) => {
 watch(isPopupOpen, (newValue) => {
   if (newValue) fetchReviews(); // Загружаем отзывы при открытии
 });
+
+// 22 февраля
+const getDate = (date) => {
+  const newDate = new Date(date);
+  return newDate.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: 'long',
+  });
+}
+const getnameNight = (nights) => {
+  if (nights === 1) {
+    return 'Ночь'
+  } else if (nights > 1 && nights < 5) {
+    return 'Ночи'
+  } else {
+    return 'Ночей'
+  }
+}
 </script>
 
 <template>
@@ -65,7 +83,8 @@ watch(isPopupOpen, (newValue) => {
             </div>
             <div class="tour-card__info">
                 <h3>{{ tour.title }}</h3>
-                <p>{{ tour.description }}</p>
+                <p class="tour-card__location">📍 {{ tour.location }}</p>
+                <p class="tour-card__date">📅 {{ getDate(tour.dateStart)}}, {{ tour.nights }} {{getnameNight(tour.nights)}}</p>
                 <p><strong>Стоимость:</strong> {{ tour.price }} ₽</p>
                 <button @click="openPopup(tour.id)" class="details-btn">Подробнее</button>
                 <button v-if="authStore.checkManager" @click="clickEditTour(tour.id)" class="details-btn">Редактировать</button>
@@ -126,7 +145,7 @@ $darcIndigo: #4C3F91;
     }
 
     &__info {
-        padding: 15px;
+        padding: 0px 15px 15px 15px;
 
         h3 {
             color: #927AF4;
@@ -136,6 +155,7 @@ $darcIndigo: #4C3F91;
         p {
             font-size: 16px;
             color: #555;
+            margin: 8px 0px;
         }
 
         .details-btn {
@@ -207,7 +227,7 @@ $darcIndigo: #4C3F91;
     position: relative;
     text-align: center;
     display: flex;
-    width: 90%;
+    // width: 90%;
     img{
         max-height: 500px;
         margin-right: 25px;

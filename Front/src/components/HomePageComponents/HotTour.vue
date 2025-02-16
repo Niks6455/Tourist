@@ -6,7 +6,7 @@
     </div>
 
     <div class="hot-tours__grid">
-      <div v-for="tour in filteredTours" :key="tour.id" class="tour-card">
+      <div v-for="tour in filteredTours" :key="tour.id" class="tour-card" @click="router.push(`/catalog`)">
         <div class="tour-card__image">
           <img :src="tour.image" :alt="tour.name" />
           <span v-if="tour.discount" class="tour-card__discount">-{{ tour.discount }}%</span>
@@ -16,8 +16,8 @@
           <p class="tour-card__location">📍 {{ tour.location }}</p>
           <p class="tour-card__date">📅 {{ tour.date }}, {{ tour.nights }} ночей</p>
           <p class="tour-card__price">
-            <span v-if="tour.oldPrice" class="tour-card__old-price">{{ tour.oldPrice }} руб</span>
-            <span class="tour-card__new-price">{{ tour.price }} руб</span>
+            <span v-if="tour.oldPrice" class="tour-card__old-price">{{ tour.oldPrice }} руб </span>
+            <span class="tour-card__new-price">- {{ tour.price }} руб</span>
           </p>
         </div>
       </div>
@@ -27,6 +27,8 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const selectedCity = ref("");
 const selectedCountry = ref("");
 
@@ -80,7 +82,7 @@ const filteredTours = computed(() => {
 <style lang="scss" scoped>
 $primary-color: #927AF4;
 $accent-color: #78CFEB;
-
+$error-color: #FF4D4D;
 .hot-tours {
   background: linear-gradient(135deg, $primary-color, $accent-color);
   padding: 2.5rem;
@@ -109,7 +111,9 @@ $accent-color: #78CFEB;
   flex-wrap: wrap;
   gap: 2rem;
 }
-
+.tour-card__title{
+  color: $primary-color;
+}
 .tour-card {
   background: white;
   color: black;
@@ -133,6 +137,10 @@ $accent-color: #78CFEB;
     height: 200px;
     object-fit: cover;
   }
+}
+.tour-card__old-price{
+  color: $error-color;
+  text-decoration: line-through;
 }
 
 .tour-card__discount {

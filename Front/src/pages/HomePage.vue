@@ -6,7 +6,7 @@ import About from './../components/HomePageComponents/About.vue';
 import HotTour from '../components/HomePageComponents/HotTour.vue';
 import Reviews from '../components/HomePageComponents/Reviews.vue';
 import { getAllReview } from '@/api/apiRequest';
-
+import Partniers from '../components/HomePageComponents/Partniers.vue';
 const reviews = ref([]);
 
 onMounted(async () => {
@@ -36,6 +36,7 @@ onMounted(async () => {
       <About />
       <HotTour />
       <Reviews :reviews="reviews" />
+      <Partniers/>
     </div>
   </div>
 </template>

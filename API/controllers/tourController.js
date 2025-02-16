@@ -49,13 +49,17 @@ export default {
   // Получить все туры
   async getAllTours(req, res) {
     try {
-      const tours = await Tour.findAll({ where: { deleted: false } });
+      const tours = await Tour.findAll({ 
+        where: { deleted: false },
+        order: [['createdAt', 'DESC']] // Сортировка по убыванию даты создания
+      });
       res.status(200).json(tours);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
     }
   },
+  
 
   // Получить тур по ID
   async getTourById(req, res) {

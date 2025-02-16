@@ -50,9 +50,9 @@ export default {
       let bookings;
       console.log("userData", userData);
       if (userData.role === 2) {
-        bookings = await Booking.findAll({ include: [User, Tour] });
+        bookings = await Booking.findAll({ include: [User, Tour], order: [['createdAt', 'DESC']] } );
       } else {
-        bookings = await Booking.findAll({ where: { userId: userData.id }, include: [Tour] });
+        bookings = await Booking.findAll({ where: { userId: userData.id }, include: [Tour], order: [['createdAt', 'DESC']] });
       }
       
       res.status(200).json(bookings);

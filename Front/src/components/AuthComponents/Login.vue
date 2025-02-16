@@ -53,7 +53,7 @@ const login = () => {
                 ErrorText.value = "";
                 console.log('data', res.data);
                 authStore.login( res.data.user ,res.data.token);
-                router.push('/homePage');
+                res.data.user.role === 1 ? router.push('/homePage') : router.push('/bookings');
             }else{
                 ErrorText.value = "Не правильный логин или пароль";
 
