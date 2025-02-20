@@ -3,7 +3,7 @@ import { useAuthStore } from "@/store/auth";
 import router from "@/router";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "http://crmTourist_backend:5001",
     headers: {
         "Content-Type": "application/json",
     },

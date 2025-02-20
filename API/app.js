@@ -1,4 +1,5 @@
 import express from 'express';
+import pg from 'pg';
 import db from './models/index.js';
 import AuthRoute from './routes/auth.js';
 import UploadRoute from './routes/upload.js';
@@ -7,27 +8,67 @@ import Tour from './routes/tour.js';
 import Booking from './routes/booking.js';
 import Reviews from './routes/reviews.js';
 
+const { Client } = pg;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+// Функция для создания базы данных
+const createDatabaseIfNotExists = async () => {
+  const client = new Client({
+    user: process.env.DB_USER,
+    password: process.env.DB_PWD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: 'postgres', // Подключаемся к системной базе для проверки
+  });
 
-// Подключение маршрутов
+  try {
+    await client.connect();
+    const dbName = process.env.DB_NAME;
+
+    const res = await client.query(`SELECT 1 FROM pg_database WHERE datname = $1`, [dbName]);
+
+    if (res.rowCount === 0) {
+      console.log(`Database "${dbName}" not found. Creating...`);
+      await client.query(`CREATE DATABASE "${dbName}"`);
+      console.log(`Database "${dbName}" created successfully.`);
+    } else {
+      console.log(`Database "${dbName}" already exists.`);
+    }
+  } catch (err) {
+    console.error('Error checking or creating database:', err);
+  } finally {
+    await client.end();
+  }
+};
+
+const startServer = async () => {
+  console.log('DB_NAME:', process.env.DB_NAME);
+
+  await createDatabaseIfNotExists(); // Создаем базу, если не существует
+
+  // Синхронизация с базой данных
+  db.sequelize.sync()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+      });
+    })
+    .catch(error => {
+      console.error('Unable to connect to the database:', error);
+    });
+};
+
+// Middlewares
 app.use(corsConfig);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }));
+
+// Подключение маршрутов
 app.use('/auth', AuthRoute);
 app.use('/upload', UploadRoute);
 app.use('/tours', Tour);
 app.use('/bookings', Booking);
 app.use('/reviews', Reviews);
 
-
-// Синхронизация с базой данных
-db.sequelize.sync().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}).catch(error => {
-  console.error('Unable to connect to the database:', error);
-});
+startServer();
