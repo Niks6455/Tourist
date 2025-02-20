@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build: 
-      context: ./API
+    image: niks64/crm-tourist-backend:v1
     container_name: crmTourist_backend
     ports:
       - "5001:5000"  # Внешний порт 5001 -> Внутренний 5000
@@ -15,8 +14,7 @@ services:
       - db
 
   frontend:
-    build:
-      context: ./front
+    image: niks64/crm-tourist-frontend:v1
     container_name: crmTourist_frontend
     ports:
       - "3000:80"
