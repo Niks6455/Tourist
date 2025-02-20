@@ -42,7 +42,7 @@ const filteredBookings = computed(() => {
 
 const changeStatus = async (booking, newStatus) => {
   try {
-    await updateBookingStatus({ BookingID: booking.id, status: newStatus });
+    await updateBookingStatus({ bookingId: booking.id, status: newStatus });
     booking.status = newStatus;
   } catch (error) {
     console.error('Ошибка обновления статуса', error);
