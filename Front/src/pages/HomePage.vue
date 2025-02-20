@@ -51,7 +51,7 @@ onMounted(async () => {
     text-align: center;
   
     .hero {
-      background: url('img/bgHomePage.jpg') center/cover no-repeat;
+      background: url('/img/bgHomePage.jpg') center/cover no-repeat;
       height: 100vh;
       display: flex;
       align-items: center;
