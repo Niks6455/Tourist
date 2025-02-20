@@ -86,9 +86,12 @@ const getnameNight = (nights) => {
                 <p class="tour-card__location">📍 {{ tour.location }}</p>
                 <p class="tour-card__date">📅 {{ getDate(tour.dateStart)}}, {{ tour.nights }} {{getnameNight(tour.nights)}}</p>
                 <p><strong>Стоимость:</strong> {{ tour.price }} ₽</p>
-                <button @click="openPopup(tour.id)" class="details-btn">Подробнее</button>
-                <button v-if="authStore.checkManager" @click="clickEditTour(tour.id)" class="details-btn">Редактировать</button>
-                <button v-if="!authStore.checkManager" class="bronedSubmit" @click="bronedTour(tour.id)">Забронировать</button>
+                <div class="tour-card__buttons">
+                    <button @click="openPopup(tour.id)" class="details-btn">Подробнее</button>
+                    <button v-if="authStore.checkManager" @click="clickEditTour(tour.id)" class="details-btn">Редактировать</button>
+                    <button v-if="!authStore.checkManager" class="bronedSubmit" @click="bronedTour(tour.id)">Забронировать</button>
+                </div>
+                
                 <button v-if="authStore.checkManager" class="deletButton" @click="deleteTour(tour.id)">&times;</button>
             </div>
         </section>
@@ -134,6 +137,7 @@ $darcIndigo: #4C3F91;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
     position: relative;
+    height: 510px;
     &:hover {
         transform: scale(1.03);
     }
@@ -217,7 +221,17 @@ $darcIndigo: #4C3F91;
     justify-content: center;
     z-index: 1000;
 }
-
+.tour-card__buttons{
+        display: flex;
+        flex-direction: column;
+        justify-content:end;
+        width: 100%;
+        position: absolute;
+        bottom: 15px;
+        button{
+            width: 90%!important;
+        }
+    }
 .popup-content {
     background: white;
     padding: 20px;
@@ -227,7 +241,7 @@ $darcIndigo: #4C3F91;
     position: relative;
     text-align: center;
     display: flex;
-    // width: 90%;
+    width: 90%;
     img{
         max-height: 500px;
         margin-right: 25px;
@@ -241,6 +255,7 @@ $darcIndigo: #4C3F91;
             
         }
     }
+  
 }
 .popup-contentReviews{
     width: 92%;
