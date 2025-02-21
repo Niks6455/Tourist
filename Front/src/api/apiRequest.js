@@ -2,8 +2,9 @@ import axios from "axios";
 import { useAuthStore } from "@/store/auth";
 import router from "@/router";
 
+const url = window.location.href
 const api = axios.create({
-    baseURL: "http://92.63.99.249:5001/",
+    baseURL: `${url}api/`,
     headers: {
         "Content-Type": "application/json",
     },

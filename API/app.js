@@ -65,10 +65,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }));
 
 // Подключение маршрутов
-app.use('/auth', AuthRoute);
-app.use('/upload', UploadRoute);
-app.use('/tours', Tour);
-app.use('/bookings', Booking);
-app.use('/reviews', Reviews);
+app.use('/api/auth', AuthRoute);
+app.use('/api/upload', UploadRoute);
+app.use('/api/tours', Tour);
+app.use('/api/bookings', Booking);
+app.use('/api/reviews', Reviews);
 
 startServer();
